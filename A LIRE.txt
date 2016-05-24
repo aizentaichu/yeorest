@@ -1,0 +1,8 @@
+ALGO : 
+
+1/ buildMeteoNCMenu()
+2/ getMeteoNCSpot(spotName)
+3/ getMeteoWGSpot(spotName)
+4/ getMeridien()
+5/ getMeridienHistory()
+

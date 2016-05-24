@@ -1,0 +1,23 @@
+[
+22, -> vent
+95, -> direction
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+0.4, -> précipitation cumul en mm
+54 -> couverture nuageuse 54%
+]
+
+
+"1461780000000": {
+		"05h53": 0.56, marée
+		"11h31": 1.12, marée 
+		"17h43": 0.34  marée 
+	}
