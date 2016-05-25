@@ -92,7 +92,7 @@ Scrapper.prototype.importMeteoNc = function () {
 	var express = require('express');
 	var app = express();
 	var cheerio = require('cheerio');
-
+	var url = require('url');
 
 	// Init json arrays
 	var jsonArr = [];
@@ -100,15 +100,7 @@ Scrapper.prototype.importMeteoNc = function () {
 	var aSpot = [];
 	var strCookieId;		
 
-		/*
-		var proxiedRequest = request.defaults({'proxy': VAR_PROXY_URL});
-		proxiedRequest.get('http://www.google.fr',function (error, response, html ) {
-			console.log(response);
-		});
-		console.log("pl");
 		
-		return;
-		*/
 	async.waterfall([
 		
 		
@@ -158,12 +150,16 @@ Scrapper.prototype.importMeteoNc = function () {
 				var requestCall2 = request.defaults({'proxy': VAR_PROXY_URL, jar: true});
 				if(aSpot[iSpot] != null){
 					var spotName = aSpot[iSpot].name;
+					
 					console.log("...Scrapping : " + spotName);
 
-					requestCall2(aSpot[iSpot].url , function (error, response, html) {
+					requestCall2(aSpot[iSpot].url , function (error, response, html, request) {
 						
 						if (!error && response.statusCode == 200) {
-
+							
+							var aPath = this.path.split("&")
+							spotName = decodeURI(aPath[aPath.length-2]).replace("spot=","");
+							
 							dbFillMeteoNC(html, spotName);
 							callback();
 						}
