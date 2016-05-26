@@ -209,86 +209,34 @@ function dbFillMeteoNC(fileContent, spotName){
 		var sScriptContent = $('script').text();
 		sScriptContent = sScriptContent.replace("setGraph(ObjectVent, SeriesVent);setGraph(ObjectHoule, SeriesHoule);","");
 		eval(sScriptContent);
-		
-		// Main data
-		for (var key in shom) {
-			if (shom.hasOwnProperty(key)) {
-				var val = shom[key];
-				var now = moment();		
-	
-				var jsonToInsert = {
-					spot:spotName,
-					date:"",
-					sysdate:key,
-					update_date:now.unix()
-				};
-			
-				// Inserting main data in MongoDB
-				MeteoNC = mongoose.model('NcWFMain');
-				MeteoNC.create(jsonToInsert);
-			
-			
-				var jsonToInsertTide = {
-					sysdate:timestamp,
-					tide_1_time:Object.keys(val)[0],
-					tide_2_time:Object.keys(val)[1],
-					tide_3_time:Object.keys(val)[2],
-					tide_4_time:Object.keys(val)[3],
-					tide_1_value:val[Object.keys(val)[0]],
-					tide_2_value:val[Object.keys(val)[1]],
-					tide_3_value:val[Object.keys(val)[2]],
-					tide_4_value:val[Object.keys(val)[3]]
-				};						
-			
-			
-				// Inserting tide data in MongoDB
-				MeteoNC = mongoose.model('NcWFTides');
-				MeteoNC.create(jsonToInsertTide);
-			
-			
-			}
-			
-		}
+
 		
 		// Wind data
+		var aWindSpeedGut = new Array();
+		var aWindSpeedAverage = new Array();
+		
 		for(iSeriesVent=0;iSeriesVent<2;iSeriesVent++){
 			
 			for(iWindData=0;iWindData<SeriesVent[iSeriesVent].data.length; iWindData++){
 				
 				var timestamp = SeriesVent[iSeriesVent].data[iWindData][0];
+
 				switch(iSeriesVent){
 					case 0:
 
 						var windSpeedGut = SeriesVent[iSeriesVent].data[iWindData][1];
-						
-						if(windSpeedGut != null){
-			
-							var jsonToInsert = {
-								sysdate:timestamp,
-								wind_speed_gut:windSpeedGut
-							};						
-					
-							// Inserting data in MongoDB
-							NcWFWindSpeedGut = mongoose.model('NcWFWindSpeedGut');
-							NcWFWindSpeedGut.create(jsonToInsert);
-						
-						}
+							
+						//if(windSpeedGut != null && windSpeedGut != ""){						
+							aWindSpeedGut[timestamp] = windSpeedGut;
+						//}
 					break;
 					case 1:
 
 						var windSpeedAverage = SeriesVent[iSeriesVent].data[iWindData][1];	
 
-						if(windSpeedAverage != null){
-								
-							var jsonToInsert = {
-								sysdate:timestamp,
-								wind_speed_average:windSpeedAverage
-							};
-							
-							// Inserting data in MongoDB
-							NcWFWindSpeedAverage = mongoose.model('NcWFWindSpeedAverage');
-							NcWFWindSpeedAverage.create(jsonToInsert);
-						}
+						//if(windSpeedAverage != null && windSpeedAverage != ""){						
+							aWindSpeedAverage[timestamp] = windSpeedAverage;
+						//}
 					break;
 					case 2:
 					
@@ -299,6 +247,39 @@ function dbFillMeteoNC(fileContent, spotName){
 				
 
 			}
+		}
+		
+		
+		// Main data
+		for (var key in shom) {
+			if (shom.hasOwnProperty(key)) {
+				
+				var val = shom[key];
+				var now = moment();		
+				
+				var jsonToInsert = {
+					spot:spotName,
+					date:"",
+					sysdate:key,
+					update_date:now.unix(),
+					tide_1_time:Object.keys(val)[0],
+					tide_2_time:Object.keys(val)[1],
+					tide_3_time:Object.keys(val)[2],
+					tide_4_time:Object.keys(val)[3],
+					tide_1_value:val[Object.keys(val)[0]],
+					tide_2_value:val[Object.keys(val)[1]],
+					tide_3_value:val[Object.keys(val)[2]],
+					tide_4_value:val[Object.keys(val)[3]],
+					wind_speed_average:aWindSpeedAverage[key],
+					wind_speed_gut:aWindSpeedGut[key]
+				};
+			
+				// Inserting main data in MongoDB
+				MeteoNC = mongoose.model('NcWFMain');
+				MeteoNC.create(jsonToInsert);
+						
+			}
+			
 		}
 	
 	}
@@ -554,7 +535,7 @@ Scrapper.prototype.importMeteoWG = function () {
 
 		var fs2 = require('fs');
 		var fileToCheck = "scrapper_data/getWindguruSpot.html";
-		
+		console.log('http://www.windguru.cz/fr/index.php?sc=' + sSpotId + '&sty=m_spot');
 		request('http://www.windguru.cz/fr/index.php?sc=' + sSpotId + '&sty=m_spot', function (error, response, html, sSpotId) {
 
 			if (!error && response.statusCode == 200) {
