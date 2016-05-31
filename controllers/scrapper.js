@@ -469,7 +469,8 @@ Scrapper.prototype.parseSpotWindGuru = function () {
 // Generating content and navigation bar for meteonc data
 Scrapper.prototype.importMeteoWG = function () {
 
-
+	console.log('importMeteoWG');
+	
 	// Importing modules
 	var fs = require('fs');
 	var cheerio = require('cheerio');
@@ -522,6 +523,9 @@ Scrapper.prototype.importMeteoWG = function () {
 		]
 	};
 
+		
+		
+	
 	//	Json NavBar
 	var jsonNavBarArr = [];
 	var jsonNavBar = {};
@@ -536,7 +540,9 @@ Scrapper.prototype.importMeteoWG = function () {
 		var fs2 = require('fs');
 		var fileToCheck = "scrapper_data/getWindguruSpot.html";
 		console.log('http://www.windguru.cz/fr/index.php?sc=' + sSpotId + '&sty=m_spot');
-		request('http://www.windguru.cz/fr/index.php?sc=' + sSpotId + '&sty=m_spot', function (error, response, html, sSpotId) {
+		
+		var requestCall1 = request.defaults({'proxy': VAR_PROXY_URL, jar: true});
+		requestCall1('http://www.windguru.cz/fr/index.php?sc=' + sSpotId + '&sty=m_spot', function (error, response, html, sSpotId) {
 
 			if (!error && response.statusCode == 200) {
 			
@@ -649,8 +655,8 @@ Scrapper.prototype.parseWgMeridienSpot____ = function (idStation, hours, avgMinu
 	backHours = 0;
 	//var _SERVER = "http://localhost:666/meteo-data/wg-data-realtime.js";
 	var _SERVER = "https://www.windguru.cz/int/iapi.php?callback=&q=station_data_last&id_station="+ idStation +"&hours="+ hours +"&avg_minutes="+ avgMinutes +"&back_hours="+ backHours +"&graph_info=1&_=1450734033114";
-
-	request(_SERVER, function (error, response, html) {
+	var requestCall1 = request.defaults({'proxy': VAR_PROXY_URL, jar: true});
+	requestCall1(_SERVER, function (error, response, html) {
 	
 		if (!error && response.statusCode == 200) {
 			
@@ -714,26 +720,36 @@ Scrapper.prototype.parseWgMeridienSpot = function () {
 	
 	async.waterfall([
 		
+
 		function call_1(callback){
 
 			var request = require('request');
 			var moment = require('moment-timezone');
 			backHours = 0;
-			//var _SERVER = "http://localhost:666/meteo-data/wg-data-realtime-unique.js";
-			var _SERVER = "https://windguru.cz/int/iapi.php?callback=&q=station_data_last&id_station=99&hours=1&avg_minutes=0.5&back_hours=0&graph_info=1&_=1450734033114";
+			
+			var requestCall0 = request.defaults({'proxy': VAR_PROXY_URL, jar: true});
+			requestCall0.get("https://beta.windguru.cz/station/99", function (error, response, html ) {
+				console.log("Call zero : https://beta.windguru.cz/station/99");
+			});
 
-			request(_SERVER, function (error, response, html) {
+			var _SERVER = "https://windguru.cz/int/iapi.php?callback=&q=station_data_last&id_station=99&hours=1&avg_minutes=0.5&back_hours=0&graph_info=1&_=1450734033114";
+			var requestCall1 = request.defaults({'proxy': VAR_PROXY_URL, jar: true});		
+			requestCall1.get(_SERVER, function (error, response, html ) {
+
 			
 				if (!error && response.statusCode == 200) {
+					
+					console.log(html);
 					
 					// Building jsVARIABLE from WG SPOT
 					eval(" var jSonResponse = (" + html + ");");
 					
 					var jSonWgRealTimeArr = [];
-					
+					console.log(html);
 					//var sWindMax = jSonResponse.wind_max[jSonResponse.wind_max.length-1];
-					sWindAvg = jSonResponse.wind_avg[jSonResponse.wind_avg.length-1];
-					
+					if(jSonResponse.wind_avg != null){
+						sWindAvg = jSonResponse.wind_avg[jSonResponse.wind_avg.length-1];
+					}
 		
 					callback(null);
 				}
