@@ -47,7 +47,7 @@ exports.findMeteoNCBySpot = function(req, res){
 	res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Cache-Control");
 	
 	var spot = req.params.spot;
-	NcWFMain.find({'spot':spot}).sort({'sysdate': 1}).limit(24).exec(function(err, result) {
+	NcWFMain.find({'spot':spot}).sort({'sysdate': -1}).limit(24).exec(function(err, result) {
 		jsonForecastNcWFMain = {"forecast_meteonc" : result};
 		return res.send(jsonForecastNcWFMain);
 	});

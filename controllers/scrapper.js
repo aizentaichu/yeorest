@@ -111,9 +111,8 @@ Scrapper.prototype.importMeteoNc = function () {
 			var requestCall1 = request.defaults({'proxy': VAR_PROXY_URL, jar: true});
 			requestCall1.get(_SERVER, function (error, response, html ) {
 				
-				
 				sSpotList = html;
-				
+
 				var sToken = html.match(/url:(.*),/).pop().replace("'/index.php?option=com_ajax&module=mer_previsions&method=getSpot&format=raw&Itemid='+jQuery('#Itemid').html()+'&", "");
 				
 				//console.log("EXTRACT : " + sToken);
