@@ -34,7 +34,6 @@ exports.meteo_nc_import = function(req, res) {
 	res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Cache-Control");
 
 	scrapper.importMeteoNc();
-	
 	res.send("Import completed...");
 };
 

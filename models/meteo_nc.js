@@ -19,7 +19,7 @@ var NcWFMain = new Schema({
   tide_4_value:String  
 });
 
-//NcWFMain.index({spot: 1, sysdate: 1}, {unique: true});
+NcWFMain.index({spot: 1, sysdate:1, wind_speed_average: 1}, {unique: true});
 
 mongoose.model('NcWFMain', NcWFMain);
 

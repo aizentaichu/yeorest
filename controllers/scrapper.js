@@ -272,7 +272,7 @@ function dbFillMeteoNC(fileContent, spotName){
 					wind_speed_average:aWindSpeedAverage[key],
 					wind_speed_gut:aWindSpeedGut[key]
 				};
-			
+				
 				// Inserting main data in MongoDB
 				MeteoNC = mongoose.model('NcWFMain');
 				MeteoNC.create(jsonToInsert);
