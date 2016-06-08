@@ -33,7 +33,18 @@ exports.meteo_nc_import = function(req, res) {
 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
 	res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Cache-Control");
 
-	scrapper.importMeteoNc();
+	// Removing then, import
+	mongoose.connection.db.dropDatabase(function(err, result) {
+		console.log('NcWFMain collection removed') 
+		scrapper.importMeteoNc();		
+	});
+	/*
+	NcWFMain.remove({}, function(err) { 
+		console.log('NcWFMain collection removed') 
+		scrapper.importMeteoNc();
+	});
+	*/
+	
 	res.send("Import completed...");
 };
 

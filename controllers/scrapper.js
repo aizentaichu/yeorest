@@ -259,7 +259,7 @@ function dbFillMeteoNC(fileContent, spotName){
 				var jsonToInsert = {
 					spot:spotName,
 					date:"",
-					sysdate:key,
+					sysdate:key/1000,
 					update_date:now.unix(),
 					tide_1_time:Object.keys(val)[0],
 					tide_2_time:Object.keys(val)[1],
@@ -669,7 +669,8 @@ Scrapper.prototype.parseWgMeridienSpot____ = function (idStation, hours, avgMinu
 				
 				// Initialize variables
 				var sDateTime = jSonResponse.datetime[iJson];
-				var sUnixTime = (jSonResponse.unixtime[iJson]*1000)+39600000;
+				//var sUnixTime = (jSonResponse.unixtime[iJson]*1000)+39600000;
+				var sUnixTime = (jSonResponse.unixtime[iJson])+39600000;
 				
 				var sWindAvg = jSonResponse.wind_avg[iJson];
 				var sWindMax = jSonResponse.wind_max[iJson];
