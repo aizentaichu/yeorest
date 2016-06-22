@@ -49,6 +49,22 @@ exports.meteo_nc_import = function(req, res) {
 };
 
 
+// List of last 6 forecast the strongests winds
+exports.findStrongestsWinds = function(req, res){
+
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+	res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Cache-Control");
+	
+	var spot = "Anse Vata";
+	console.log("toooooooooooooto");
+	NcWFMain.find({'spot':spot}).sort({'wind_speed_average': -1,'sysdate': -1 }).limit(6).exec(function(err, result) {
+		jsonForecastNcWFMain = {"forecast_meteonc" : result};
+		return res.send(jsonForecastNcWFMain);
+	});
+
+};
+
 // List of last 12 forecast for a choosen spot
 exports.findMeteoNCBySpot = function(req, res){
 
