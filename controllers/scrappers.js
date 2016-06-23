@@ -56,9 +56,15 @@ exports.findStrongestsWinds = function(req, res){
 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
 	res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Cache-Control");
 	
-	var spot = "Anse Vata";
-	console.log("toooooooooooooto");
-	NcWFMain.find({'spot':spot}).sort({'wind_speed_average': -1,'sysdate': -1 }).limit(6).exec(function(err, result) {
+	NcWFMain.find({'sysdate':{
+			'$gte': new Date(2016, 1, 20),
+			'$lte': new Date(2016, 6, 30)
+	}}).sort(
+		{
+			'wind_speed_average': -1,
+			'sysdate': -1 
+		}
+	).limit(6).exec(function(err, result) {
 		jsonForecastNcWFMain = {"forecast_meteonc" : result};
 		return res.send(jsonForecastNcWFMain);
 	});
