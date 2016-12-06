@@ -551,26 +551,36 @@ Scrapper.prototype.importMeteoWG = function () {
 				if (fileContent != null) {
 
 					var $sWgContent = cheerio.load(fileContent);
-					var sWgJson = $sWgContent(".fcsttabf script").text().trim();
-
-					sWgJson = sWgJson.replace("wgopts_1.lang = WgLang;");
-					sWgJson = sWgJson.replace("WgFcst.showForecast(wg_fcst_tab_data_1,wgopts_1);");
-					sWgJson = sWgJson.replace("wgopts_2.lang = WgLang;");
-					sWgJson = sWgJson.replace("WgFcst.showForecast(wg_fcst_tab_data_2,wgopts_2);");
-
-					// Using Wg Json object from webpage...
-					eval(sWgJson);
 					
+					// Eval of all clientside to serverside
+
+					var sWgJson;
+					for(var iEv=0;iEv<$sWgContent("script").length;iEv++){				
+					
+						try {
+							eval($sWgContent("script").eq(iEv).text().trim());
+						} catch (e) {
+							console.log('\x1b[31m', e.message);
+							console.log('\x1b[0m','');
+							if (e instanceof SyntaxError) {
+
+							}
+						}
+
+					}
+										
 					var moment = require('moment-timezone');
 					moment().format();
 					moment.locale('en-EN');
 					moment().utcOffset(11);
 					
 					// Wed, 13 Jan 2016 04:51:39
-					var sUpdateDate = wg_fcst_tab_data_1.fcst["3"].update_last.trim(); 
-					var m = moment(sUpdateDate, "ddd, DD MMM YYYY HH:mm:ss +SSSS");
-					sUpdateDate = m.unix();
-					
+					var sUpdateDate = null
+					if(wg_fcst_tab_data_1 != null){
+						var sUpdateDate = wg_fcst_tab_data_1.fcst["3"].update_last.trim(); 
+						var m = moment(sUpdateDate, "ddd, DD MMM YYYY HH:mm:ss +SSSS");
+						sUpdateDate = m.unix();
+					}		
 					
 					var aWgJsonData = [];
 					var iMoments = 1;
