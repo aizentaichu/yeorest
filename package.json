@@ -22,7 +22,7 @@
     "mongoose": "^4.3.4"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "mocha --reporter spec"
   },
   "author": "Grégory COLIN",
   "license": "ISC",
@@ -33,5 +33,8 @@
   "bugs": {
     "url": "https://github.com/aizentaichu/yeorest/issues"
   },
-  "homepage": "https://github.com/aizentaichu/yeorest#readme"
+  "homepage": "https://github.com/aizentaichu/yeorest#readme",
+  "directories": {
+    "test": "test"
+  }
 }
